@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Send Telegram Call</title>
   <style>
-    /* Your existing CSS */
     @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
     * {
       margin: 0;
@@ -112,7 +111,7 @@
   </div>
 
   <script>
-    async function sendTelegramCall() {
+    function sendTelegramCall() {
       const telegramUsername = document.getElementById('telegramUsername').value;
       const message = document.getElementById('message').value;
       const responseMessage = document.getElementById('responseMessage');
@@ -121,9 +120,7 @@
 
       if (telegramUsername && message) {
         const encodedMessage = encodeURIComponent(message);
-
-        // Fetch the environment variable for the API URL
-        const apiUrl = `${await fetch('/.netlify/functions/getApiUrl').then(res => res.text())}?user=${telegramUsername}&text=${encodedMessage}&lang=en-GB-Standard-B`;
+        const apiUrl = `https://api.callmebot.com/start.php?user=${telegramUsername}&text=${encodedMessage}&lang=en-GB-Standard-B`;
 
         fetch(apiUrl)
           .then(response => response.text())

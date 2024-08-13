@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Send Telegram Call</title>
   <style>
+    /* Styling remains the same as your original code */
     @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
     * {
       margin: 0;
@@ -58,9 +59,6 @@
       box-shadow: inset 2px 2px 5px #BABECC, inset -5px -5px 10px #ffffff73;
       resize: none;
     }
-    .field textarea {
-      height: 100px;
-    }
     .spacer {
       height: 20px;
     }
@@ -84,10 +82,8 @@
       box-shadow: inset 2px 2px 5px #BABECC, inset -5px -5px 10px #ffffff73;
     }
     #responseMessage {
-      margin-top: 10px;
+      margin-top: 20px;
       font-size: 16px;
-      font-weight: 500;
-      color: white;
     }
   </style>
 </head>
@@ -111,7 +107,7 @@
   </div>
 
   <script>
-    function sendTelegramCall() {
+    async function sendTelegramCall() {
       const telegramUsername = document.getElementById('telegramUsername').value;
       const message = document.getElementById('message').value;
       const responseMessage = document.getElementById('responseMessage');
@@ -120,23 +116,25 @@
 
       if (telegramUsername && message) {
         const encodedMessage = encodeURIComponent(message);
-        const apiUrl = `https://api.callmebot.com/start.php?user=${telegramUsername}&text=${encodedMessage}&lang=en-GB-Standard-B`;
 
-        fetch(apiUrl)
-          .then(response => response.text())
-          .then(data => {
-            if (data.includes("Call initiated")) {
-              responseMessage.textContent = 'Call initiated successfully!';
-              responseMessage.style.color = 'green';
-            } else {
-              responseMessage.textContent = 'Failed to initiate call. Response from server: ' + data;
-              responseMessage.style.color = 'red';
-            }
-          })
-          .catch(error => {
-            responseMessage.textContent = 'Error occurred: ' + error.message;
+        // The environment variable in plain JS
+        const apiUrl = `${import.meta.env.VITE_CALLMEBOT_API_BASE_URL}?user=${telegramUsername}&text=${encodedMessage}&lang=en-GB-Standard-B`;
+
+        try {
+          const response = await fetch(apiUrl);
+          const data = await response.text();
+
+          if (data.includes("Call initiated")) {
+            responseMessage.textContent = 'Call initiated successfully!';
+            responseMessage.style.color = 'green';
+          } else {
+            responseMessage.textContent = 'Failed to initiate call. Response from server: ' + data;
             responseMessage.style.color = 'red';
-          });
+          }
+        } catch (error) {
+          responseMessage.textContent = 'Error occurred: ' + error.message;
+          responseMessage.style.color = 'red';
+        }
       } else {
         responseMessage.textContent = 'Please fill in all fields.';
         responseMessage.style.color = 'red';
